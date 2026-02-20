@@ -1,0 +1,11 @@
+/.vs
+/bin
+/obj
+
+/BiddingApp/bin
+/BiddingApp/obj
+
+*DS_Store
+/DS_Store
+/DS_Store*
+/DS_Store/*
