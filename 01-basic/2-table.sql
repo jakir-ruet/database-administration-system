@@ -1,25 +1,42 @@
--- Create a new database named COMPANYDB
-CREATE DATABASE COMPANYDB;
-USE COMPANYDB;
+-- Create a new database named sunitdb
+CREATE DATABASE sunitdb;
+drop database sunitdb;
+USE sunitdb;
 
 -- Create a new table named Employees with various columns
 CREATE TABLE Employees (
-    Id INT IDENTITY PRIMARY KEY,
-    Name NVARCHAR(100),
-    Department NVARCHAR(50),
-    Salary INT,
-    City NVARCHAR(50),
-    Age INT
+    EmpID INT PRIMARY KEY,
+    EmpName VARCHAR(50),
+    Salary DECIMAL(10, 2),
+    DeptID INT
 );
 
 -- Insert sample data into the Employees table
-INSERT INTO Employees (Name, Department, Salary, City, Age) VALUES
-('Rahim','IT',60000,'Dhaka',30),
-('Karim','HR',45000,'Rajshahi',28),
-('Sumon','IT',70000,'Dhaka',35),
-('Jamal','Accounts',40000,'Khulna',40),
-('Nayeem','IT',65000,NULL,27),
-('Sakib','HR',48000,'Dhaka',29);
+INSERT INTO Employees VALUES
+(1, 'Jakir', 5000.00, 10),
+(2, 'Rahim', 5500.00, 20),
+(3, 'Karim', 6000.00, 30),
+(4, 'Sadek', 6500.00, 40),
+(5, 'Tania', 7000.00, 50);
+
+-- Create a new table named Projects with various columns
+CREATE TABLE Projects (
+    ProjectID INT PRIMARY KEY,
+    ProjectName VARCHAR(50),
+    DeptID INT
+);
+
+-- Insert sample data into the Projects table
+INSERT INTO Projects VALUES
+(101, 'Website Redesign', 10),
+(102, 'CRM Implementation', 20),
+(103, 'Marketing Campaign', 30),
+(104, 'Recruitment Drive', 40),
+(105, 'Server Upgrade', 60);
+
+UPDATE Projects
+SET ProjectName = 'Recruitment Drive'
+WHERE ProjectID = 105;
 
 -- List all tables in the current database
 SELECT name
@@ -46,3 +63,8 @@ EXEC sp_tables;
 -- To list all tables in the current database using a simple query
 SELECT DB_NAME() AS CurrentDatabase;
 SELECT name FROM sys.tables;
+
+-- Delete the Employees and Projects tables
+drop table Employees;
+drop table Projects;
+

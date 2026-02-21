@@ -67,17 +67,17 @@ docker exec -it mssql2022 /opt/mssql-tools/bin/sqlcmd \
 
 Although both DBMS and RDBMS are used to store information in a physical database, there are significant differences between them. Below is a comparison of the main differences:
 
-| No. | DBMS                                                                     | RDBMS                                                                                                              |
-| --- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| 1   | DBMS applications store data as files.                                   | RDBMS applications store data in a tabular form.                                                                   |
-| 2   | Data is generally stored in hierarchical or navigational form.           | Data is stored in tables with identifiers called primary keys.                                                     |
-| 3   | Normalization is not present in DBMS.                                    | Normalization is present in RDBMS.                                                                                 |
-| 4   | DBMS does not apply any security regarding data manipulation.            | RDBMS defines integrity constraints to ensure ACID properties (Atomicity, Consistency, Isolation, and Durability). |
-| 5   | DBMS uses a file system, so there is no relationship between tables.     | RDBMS stores data in tables with relationships between them.                                                       |
-| 6   | DBMS provides uniform methods to access data.                            | RDBMS supports a tabular structure and relationships for accessing stored information.                             |
-| 7   | DBMS does not support distributed databases.                             | RDBMS supports distributed databases.                                                                              |
-| 8   | DBMS is suited for small organizations with single users and small data. | RDBMS is designed to handle large data and support multiple users.                                                 |
-| 9   | Examples: File systems, XML, etc.                                        | Examples: MySQL, PostgreSQL, SQL Server, Oracle, etc.                                                              |
+| No. | DBMS                                                                     | RDBMS                                                                                                                     |
+| --- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| 1   | DBMS applications store data as files.                                   | RDBMS applications store data in a tabular form.                                                                          |
+| 2   | Data is generally stored in hierarchical or navigational form.           | Data is stored in tables with identifiers called primary keys.                                                            |
+| 3   | Normalization is not present in DBMS.                                    | Normalization is present in RDBMS.                                                                                        |
+| 4   | DBMS does not apply any security regarding data manipulation.            | RDBMS defines integrity constraints to ensure ACID properties (AtomiProjectName, Consistency, Isolation, and Durability). |
+| 5   | DBMS uses a file system, so there is no relationship between tables.     | RDBMS stores data in tables with relationships between them.                                                              |
+| 6   | DBMS provides uniform methods to access data.                            | RDBMS supports a tabular structure and relationships for accessing stored information.                                    |
+| 7   | DBMS does not support distributed databases.                             | RDBMS supports distributed databases.                                                                                     |
+| 8   | DBMS is suited for small organizations with single users and small data. | RDBMS is designed to handle large data and support multiple users.                                                        |
+| 9   | Examples: File systems, XML, etc.                                        | Examples: MySQL, PostgreSQL, SQL Server, Oracle, etc.                                                                     |
 
 ### Database Languages
 

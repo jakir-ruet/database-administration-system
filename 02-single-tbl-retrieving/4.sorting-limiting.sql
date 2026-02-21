@@ -1,5 +1,5 @@
 -- Sorting and Limiting Results
-SELECT Name, Salary
+SELECT EmpName, Salary
 FROM Employees
 ORDER BY Salary DESC;
 

@@ -42,36 +42,33 @@ USE master;
 
 ## Query for table
 
-1. Create a new database named COMPANYDB
+1. Create a new database named sunitdb
 
 ```bash
-CREATE DATABASE COMPANYDB;
-USE COMPANYDB;
+create database sunitdb;
+use sunitdb;
 ```
 
 2. Create a new table named Employees with various columns
 
 ```bash
 CREATE TABLE Employees (
-    Id INT IDENTITY PRIMARY KEY,
-    Name NVARCHAR(100),
-    Department NVARCHAR(50),
-    Salary INT,
-    City NVARCHAR(50),
-    Age INT
+    EmpID INT PRIMARY KEY,
+    EmpName VARCHAR(50),
+    Salary DECIMAL(10, 2),
+    DeptID INT
 );
 ```
 
 3. Insert sample data into the Employees table
 
 ```bash
-INSERT INTO Employees (Name, Department, Salary, City, Age) VALUES
-('Rahim','IT',60000,'Dhaka',30),
-('Karim','HR',45000,'Rajshahi',28),
-('Sumon','IT',70000,'Dhaka',35),
-('Jamal','Accounts',40000,'Khulna',40),
-('Nayeem','IT',65000,NULL,27),
-('Sakib','HR',48000,'Dhaka',29);
+INSERT INTO Employees VALUES
+(1, 'Jakir', 5000.00, 10),
+(2, 'Rahim', 5500.00, 20),
+(3, 'Karim', 6000.00, 30),
+(4, 'Sadek', 6500.00, 40),
+(5, 'Tania', 7000.00, 50);
 ```
 
 4. List all tables in the current database

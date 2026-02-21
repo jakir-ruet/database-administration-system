@@ -1,16 +1,16 @@
--- How many employees in Dhaka City
-SELECT COUNT(*) AS Employees_in_Dhaka
+-- How many employees name Jakir
+SELECT COUNT(*) AS Employees_Name
 FROM Employees
-WHERE City = 'Dhaka';
+WHERE EmpName = 'Jakir';
 
 -- Show all records of employees
 SELECT *
 FROM Employees;
 
 -- How many employees in IT department
-SELECT COUNT(*) AS In_IT_Dept
+SELECT COUNT(*) AS Employees_Name
 FROM Employees
-WHERE Department = 'IT';
+WHERE EmpName = 'Rahim';
 
 -- What is the MAX salary of employees
 SELECT MAX(Salary) AS Max_Salary
@@ -32,18 +32,20 @@ FROM Employees;
 SELECT *
 FROM Employees;
 
--- Group employees by Id and count total employees
-SELECT Id, COUNT(*) AS Total_Employees
+-- Group employees by EmpId and count total employees
+SELECT EmpId, COUNT(*) AS Total_Employees
 FROM Employees
-GROUP BY Id;
+GROUP BY EmpId;
 
--- Group employees by Department and count total employees in each department
-SELECT Department, COUNT(*) AS Total_Employees
+-- Group employees by Salary and count total employees salary
+SELECT Salary, COUNT(*) AS Total_Employees
 FROM Employees
-GROUP BY Department;
+GROUP BY Salary;
 
 -- Group employees by Department and calculate the average salary in each department
-SELECT Department, AVG(Salary) AS Avg_Salary
+SELECT DeptID, SUM(Salary) AS TotalSalary
 FROM Employees
-GROUP BY Department
-HAVING AVG(Salary) > 45000;
+GROUP BY DeptID
+HAVING SUM(Salary) > 6000;
+
+select * from Employees;

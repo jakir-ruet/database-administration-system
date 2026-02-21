@@ -3,9 +3,13 @@ SELECT *
 FROM employees;
 
 -- Retrieve only the Name and Salary columns from the employees table
-SELECT Name AS EmployeeName, Salary AS EmployeeSalary
-FROM employees;
+SELECT EmpName AS EmployeeName, Salary AS EmployeeSalary
+FROM Employees;
 
 -- Retrieve distinct cities from the employees table
-SELECT DISTINCT City
-FROM employees;
+SELECT DISTINCT ProjectName
+FROM Projects;
+
+SELECT * from Projects;
+
+
