@@ -1,13 +1,13 @@
 ### Retrieving Data from a Single Table
 
-**Data Retrieval Basics**
+1. **Data Retrieval Basics**
 
-- SELECT
-- FROM
-- AS (Alias)
-- DISTINCT
+- SELECT - `specifies columns to fetch.`
+- FROM - `specifies the table`
+- AS (Alias) - `Aliases rename columns (or tables) for readability.`
+- DISTINCT - `Removes duplicate values from the result set.`
 
-**Filtering Data**
+2. **Filtering Data**
 
 - WHERE Clause
 - Comparison Operators (=, <>, <, >)
@@ -15,23 +15,24 @@
 - IN Operator
 - BETWEEN Operator
 - LIKE Operator
-- REGEXP alternative (PATINDEX)
+- PATINDEX alternative (REGEXP)
 - IS NULL/IS NOT NULL
 
-**Aggregation**
+3. **Aggregation**
 
 - COUNT()
 - MAX()
 - MIN()
 - AVG()
 - GROUP BY
+- HAVING - Combine with HAVING to filter aggregated results
 
-**Sorting & Limiting**
+4. **Sorting & Limiting**
 
 - ORDER BY
 - TOP/OFFSET-FETCH (LIMIT equivalent)
 
-> Even though we write SQL differently, SQL Server processes queries logically in this order
+# Even though we write SQL differently, SQL Server processes queries logically in this order
 
 1. FROM
 2. WHERE
