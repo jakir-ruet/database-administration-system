@@ -18,6 +18,11 @@
 
 - LEFT + RIGHT combined.
 
-## Self Join
+## Union - Stack rows (no duplicates)
 
-- Table joined with itself.
+- Duplicate values removed automatically.
+
+## Union All - Stack rows (with duplicates)
+
+- Faster because SQL Server does NOT remove duplicates.
+- Column data types must be compatible.
