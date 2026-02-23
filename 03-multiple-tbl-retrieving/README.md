@@ -26,3 +26,7 @@
 
 - Faster because SQL Server does NOT remove duplicates.
 - Column data types must be compatible.
+
+## SQL Join
+
+![SQL Join](/img/join.png)
