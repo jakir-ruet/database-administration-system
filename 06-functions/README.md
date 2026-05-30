@@ -12,6 +12,8 @@ A function in Oracle SQL is a predefined or user-defined program unit that takes
 | **Pipelined Table**          | Stream rows one by one instead of returning full result at once    | Rows processed iteratively | Streaming rows (table output) | High-performance data processing, ETL pipelines           | `PIPELINED FUNCTION ... RETURN TABLE`     |
 | **Deterministic**            | Always return the same result for same input                       | Same input repeatedly      | Same output consistently      | Performance optimization, caching, indexed function calls | `DETERMINISTIC FUNCTION calc_tax(salary)` |
 
+- A Table Function is a PL/SQL function that returns a collection of rows (like a table) instead of a single value.
+- 
 **Quick Understanding**
 
 | Type                     | Input                       | Output                      | Think Like             |
@@ -59,6 +61,24 @@ A Scalar Function works on `one row at a time and returns one value per row`.
 | Conversion Functions | `TO_CHAR`, `TO_NUMBER`, `TO_DATE`               |
 | Null Functions       | `NVL`, `COALESCE`, `NVL2`                       |
 
+**Types of Conversion Functions**
+
+| Function  | Purpose                        |
+| --------- | ------------------------------ |
+| TO_CHAR   | Convert number/date → string   |
+| TO_NUMBER | Convert string → number        |
+| TO_DATE   | Convert string → date          |
+| CAST      | Convert between any data types |
+
+**Aggregate Functions**
+
+| Function | Purpose        |
+| -------- | -------------- |
+| COUNT    | Number of rows |
+| SUM      | Total value    |
+| AVG      | Average value  |
+| MAX      | Highest value  |
+| MIN      | Lowest value   |
 
 ### Function vs Procedure
 
