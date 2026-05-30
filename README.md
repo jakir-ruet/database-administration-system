@@ -21,7 +21,7 @@ An Oracle Database system consists of **two** main components:
 - Database (Physical Files on Disk)
 
 > **Key Distinction:**
-> 
+>
 > - An instance can mount and open only one database.
 > - A database can be mounted and opened by one or more instances (Real Application Clusters/RAC).
 
@@ -78,12 +78,14 @@ A private memory region for each server process. Not shared. Contains:
 - Cursor state
 - Hash join area
 
-> **Standard rule:** PGA = Process-specific, SGA = Shared across all processes.
+> **Standard rule:**
+>
+> - PGA = Process-specific,
+> - SGA = Shared across all processes.
 
 ### The Database
 
-The database is the physical storage layer on persistent disk. It consists of at least three mandatory file types.
-Mandatory Files (required to open the database):
+The database is the physical storage layer on persistent disk. It consists of at least three mandatory file types. Mandatory Files (required to open the database):
 
 #### Control Files
 
@@ -119,6 +121,119 @@ The Three Opening Stages (Oracle Startup Stages)
 | **NOMOUNT** | STARTUP NOMOUNT      | Instance starts, SGA allocated, background processes start | No DB access     |
 | **MOUNT**   | ALTER DATABASE MOUNT | Control file read, DB associated with instance             | DBA only         |
 | **OPEN**    | ALTER DATABASE OPEN  | Datafiles + redo logs opened                               | Full user access |
+
+### Oracle System Users and Their Functions
+
+| Category              | Users       | Function / Purpose                                                         | Real Example Use                           |
+| --------------------- | ----------- | -------------------------------------------------------------------------- | ------------------------------------------ |
+| Core DBA              | SYS         | Full database owner, controls data dictionary and internal database engine | `STARTUP; SHUTDOWN IMMEDIATE;`             |
+|                       | SYSTEM      | General administrative user for database management tasks                  | `CREATE USER app_user IDENTIFIED BY pass;` |
+| Monitoring            | DBSNMP      | Used by Oracle Enterprise Manager (OEM) for database monitoring            | OEM health monitoring dashboards           |
+|                       | APPQOSSYS   | Oracle Quality of Service (QoS) monitoring for performance tracking        | Tracks workload and DB performance         |
+| Application Framework | APEX_XXXXXX | Oracle APEX schema used for web-based applications                         | Running APEX dashboards and low-code apps  |
+| Application Framework | FLOWS_FILES | Stores uploaded files for Oracle APEX applications                         | File upload/download in APEX apps          |
+|                       | ANONYMOUS   | Enables HTTP/XML DB access for web services                                | REST/XML web service access                |
+| XML & Search          | XDB         | XML Database engine for storing and querying XML data                      | Storing XML documents in database          |
+|                       | CTXSYS      | Oracle Text engine for full-text search indexing                           | Full-text search using `CONTAINS()`        |
+| Spatial & Analytics   | MDSYS       | Oracle Spatial engine for GIS and location-based data                      | Maps, GPS, geospatial queries              |
+|                       | OLAPSYS     | OLAP cube processing engine for analytics                                  | Data warehouse reporting and analytics     |
+| Multimedia (Legacy)   | ORDSYS      | Multimedia metadata system (legacy feature)                                | Image/video metadata handling              |
+|                       | ORDPLUGINS  | Multimedia processing plugins (legacy feature)                             | File format conversion                     |
+|                       | OUTLN       | Stores SQL execution outlines (deprecated feature)                         | Query optimization plan storage            |
+| Replication           | GGSYS       | Oracle GoldenGate system user for data replication                         | Real-time data sync between databases      |
+
+#### Difference Between DBMS and RDBMS
+
+Although both DBMS and RDBMS are used to store information in a physical database, there are significant differences between them. Below is a comparison of the main differences:
+
+| No. | DBMS                                                                     | RDBMS                                                                                                                     |
+| --- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| 1   | DBMS applications store data as files.                                   | RDBMS applications store data in a tabular form.                                                                          |
+| 2   | Data is generally stored in hierarchical or navigational form.           | Data is stored in tables with identifiers called primary keys.                                                            |
+| 3   | Normalization is not present in DBMS.                                    | Normalization is present in RDBMS.                                                                                        |
+| 4   | DBMS does not apply any security regarding data manipulation.            | RDBMS defines integrity constraints to ensure ACID properties (AtomiProjectName, Consistency, Isolation, and Durability). |
+| 5   | DBMS uses a file system, so there is no relationship between tables.     | RDBMS stores data in tables with relationships between them.                                                              |
+| 6   | DBMS provides uniform methods to access data.                            | RDBMS supports a tabular structure and relationships for accessing stored information.                                    |
+| 7   | DBMS does not support distributed databases.                             | RDBMS supports distributed databases.                                                                                     |
+| 8   | DBMS is suited for small organizations with single users and small data. | RDBMS is designed to handle large data and support multiple users.                                                        |
+| 9   | Examples: File systems, XML, etc.                                        | Examples: MySQL, PostgreSQL, SQL Server, Oracle, etc.                                                                     |
+
+### Database Languages
+
+A database system provides various languages for defining, manipulating, and controlling data. These include the
+
+- **Data Definition Language (DDL)**,
+- **Data Manipulation Language (DML)**,
+- **Data Control Language (DCL)**, and
+- **Transaction Control Language (TCL)**.
+
+In practice, these languages are not separate but form parts of a single database language, such as **SQL**.
+
+#### Data Definition Language (DDL)
+
+DDL is used to specify the database schema. It is used for creating and altering database structures such as tables, schemas, indexes, and constraints. The following operations are part of DDL:
+
+| **Operation** | **Description**                                                       | **Example**                                            |
+| ------------- | --------------------------------------------------------------------- | ------------------------------------------------------ |
+| CREATE        | To create a database instance or objects like tables, schemas, etc.   | `CREATE TABLE Employees (ID INT, Name VARCHAR(100));`  |
+| ALTER         | To alter the structure of the database or database objects.           | `ALTER TABLE Employees ADD COLUMN Age INT;`            |
+| DROP          | To drop database instances or objects (e.g., tables, schemas).        | `DROP TABLE Employees;`                                |
+| TRUNCATE      | To delete all records from a table without removing the table itself. | `TRUNCATE TABLE Employees;`                            |
+| RENAME        | To rename a database object (e.g., a table, column, etc.).            | `RENAME TABLE Employees TO Staff;`                     |
+| COMMENT       | To add comments to database objects (e.g., tables, columns).          | `COMMENT ON COLUMN Employees.Name IS 'Employee Name';` |
+
+Since these commands define or update the schema, they are categorized as part of **Data Definition Language**.
+
+#### Data Manipulation Language (DML)
+
+DML is used for accessing and manipulating data stored in a database. The following operations are part of DML:
+
+| Command    | Description                              | Example                                                      |
+| ---------- | ---------------------------------------- | ------------------------------------------------------------ |
+| **SELECT** | To read records from one or more tables. | `SELECT * FROM Employees;`                                   |
+| **INSERT** | To insert records into tables.           | `INSERT INTO Employees (Name, Age) VALUES ('John Doe', 30);` |
+| **UPDATE** | To update existing data in a table.      | `UPDATE Employees SET Age = 31 WHERE Name = 'John Doe';`     |
+| **DELETE** | To delete records from a table.          | `DELETE FROM Employees WHERE Name = 'John Doe';`             |
+
+#### Data Control Language (DCL)
+
+DCL is used for granting and revoking access to the database. The main DCL operations are:
+
+| Command    | Description                              | Example                                      |
+| ---------- | ---------------------------------------- | -------------------------------------------- |
+| **GRANT**  | To give access privileges to a user.     | `GRANT SELECT ON Employees TO user_name;`    |
+| **REVOKE** | To remove access privileges from a user. | `REVOKE SELECT ON Employees FROM user_name;` |
+
+Although DDL, DML, and DCL are often considered separate languages, they are actually components of a single database language like SQL.
+
+#### Transaction Control Language (TCL)
+
+TCL commands manage changes to the database that are made using DML. These changes can either be committed (saved) or rolled back (undone) using TCL commands:
+
+| Command      | Description                                                         | Example     |
+| ------------ | ------------------------------------------------------------------- | ----------- |
+| **COMMIT**   | To save all changes made by DML commands (INSERT, UPDATE, DELETE).  | `COMMIT;`   |
+| **ROLLBACK** | To undo changes made by DML commands and revert the database state. | `ROLLBACK;` |
+
+### DELETE vs TRUNCATE vs DROP
+
+| Feature                  | DELETE                 | TRUNCATE         | DROP               |
+| ------------------------ | ---------------------- | ---------------- | ------------------ |
+| Type                     | DML                    | DDL              | DDL                |
+| Removes rows             | Yes                    | Yes              | Yes                |
+| Removes table structure  | No                     | No               | Yes                |
+| WHERE clause allowed     | Yes                    | No               | No                 |
+| Rollback possible        | Yes                    | No (auto commit) | No (auto commit)   |
+| Trigger fires            | Yes (`DELETE` trigger) | No               | No                 |
+| Transaction logging      | Fully logged           | Minimal logging  | Metadata operation |
+| Speed                    | Slower                 | Faster           | Fastest            |
+| Space released           | Usually No             | Yes              | Yes                |
+| Table remains            | Yes                    | Yes              | No                 |
+| Index remains            | Yes                    | Yes              | Removed            |
+| Constraints remain       | Yes                    | Yes              | Removed            |
+| Grants/privileges remain | Yes                    | Yes              | Removed            |
+| Recreate table needed    | No                     | No               | Yes                |
+| Used in production       | Very common            | Common           | Risky/Dangerous    |
 
 ### Datatype
 
@@ -344,46 +459,6 @@ SHOW USER;
 SELECT username FROM dba_users; # Show user list
 ```
 
-### Oracle System Users and Their Functions
-
-| Category              | Users       | Function / Purpose                                                         | Real Example Use                           |
-| --------------------- | ----------- | -------------------------------------------------------------------------- | ------------------------------------------ |
-| Core DBA              | SYS         | Full database owner, controls data dictionary and internal database engine | `STARTUP; SHUTDOWN IMMEDIATE;`             |
-|                       | SYSTEM      | General administrative user for database management tasks                  | `CREATE USER app_user IDENTIFIED BY pass;` |
-| Monitoring            | DBSNMP      | Used by Oracle Enterprise Manager (OEM) for database monitoring            | OEM health monitoring dashboards           |
-|                       | APPQOSSYS   | Oracle Quality of Service (QoS) monitoring for performance tracking        | Tracks workload and DB performance         |
-| Application Framework | APEX_XXXXXX | Oracle APEX schema used for web-based applications                         | Running APEX dashboards and low-code apps  |
-| Application Framework | FLOWS_FILES | Stores uploaded files for Oracle APEX applications                         | File upload/download in APEX apps          |
-|                       | ANONYMOUS   | Enables HTTP/XML DB access for web services                                | REST/XML web service access                |
-| XML & Search          | XDB         | XML Database engine for storing and querying XML data                      | Storing XML documents in database          |
-|                       | CTXSYS      | Oracle Text engine for full-text search indexing                           | Full-text search using `CONTAINS()`        |
-| Spatial & Analytics   | MDSYS       | Oracle Spatial engine for GIS and location-based data                      | Maps, GPS, geospatial queries              |
-|                       | OLAPSYS     | OLAP cube processing engine for analytics                                  | Data warehouse reporting and analytics     |
-| Multimedia (Legacy)   | ORDSYS      | Multimedia metadata system (legacy feature)                                | Image/video metadata handling              |
-|                       | ORDPLUGINS  | Multimedia processing plugins (legacy feature)                             | File format conversion                     |
-|                       | OUTLN       | Stores SQL execution outlines (deprecated feature)                         | Query optimization plan storage            |
-| Replication           | GGSYS       | Oracle GoldenGate system user for data replication                         | Real-time data sync between databases      |
-
-### DELETE vs TRUNCATE vs DROP
-
-| Feature                  | DELETE                 | TRUNCATE         | DROP               |
-| ------------------------ | ---------------------- | ---------------- | ------------------ |
-| Type                     | DML                    | DDL              | DDL                |
-| Removes rows             | Yes                    | Yes              | Yes                |
-| Removes table structure  | No                     | No               | Yes                |
-| WHERE clause allowed     | Yes                    | No               | No                 |
-| Rollback possible        | Yes                    | No (auto commit) | No (auto commit)   |
-| Trigger fires            | Yes (`DELETE` trigger) | No               | No                 |
-| Transaction logging      | Fully logged           | Minimal logging  | Metadata operation |
-| Speed                    | Slower                 | Faster           | Fastest            |
-| Space released           | Usually No             | Yes              | Yes                |
-| Table remains            | Yes                    | Yes              | No                 |
-| Index remains            | Yes                    | Yes              | Removed            |
-| Constraints remain       | Yes                    | Yes              | Removed            |
-| Grants/privileges remain | Yes                    | Yes              | Removed            |
-| Recreate table needed    | No                     | No               | Yes                |
-| Used in production       | Very common            | Common           | Risky/Dangerous    |
-
 ### Delete Example
 
 ```bash
@@ -511,79 +586,6 @@ GO
 docker exec -it mssql2022 /opt/mssql-tools/bin/sqlcmd \
    -S localhost -U sa -P "Sql@054003"
 ```
-
-#### Difference Between DBMS and RDBMS
-
-Although both DBMS and RDBMS are used to store information in a physical database, there are significant differences between them. Below is a comparison of the main differences:
-
-| No. | DBMS                                                                     | RDBMS                                                                                                                     |
-| --- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| 1   | DBMS applications store data as files.                                   | RDBMS applications store data in a tabular form.                                                                          |
-| 2   | Data is generally stored in hierarchical or navigational form.           | Data is stored in tables with identifiers called primary keys.                                                            |
-| 3   | Normalization is not present in DBMS.                                    | Normalization is present in RDBMS.                                                                                        |
-| 4   | DBMS does not apply any security regarding data manipulation.            | RDBMS defines integrity constraints to ensure ACID properties (AtomiProjectName, Consistency, Isolation, and Durability). |
-| 5   | DBMS uses a file system, so there is no relationship between tables.     | RDBMS stores data in tables with relationships between them.                                                              |
-| 6   | DBMS provides uniform methods to access data.                            | RDBMS supports a tabular structure and relationships for accessing stored information.                                    |
-| 7   | DBMS does not support distributed databases.                             | RDBMS supports distributed databases.                                                                                     |
-| 8   | DBMS is suited for small organizations with single users and small data. | RDBMS is designed to handle large data and support multiple users.                                                        |
-| 9   | Examples: File systems, XML, etc.                                        | Examples: MySQL, PostgreSQL, SQL Server, Oracle, etc.                                                                     |
-
-### Database Languages
-
-A database system provides various languages for defining, manipulating, and controlling data. These include the
-
-- **Data Definition Language (DDL)**,
-- **Data Manipulation Language (DML)**,
-- **Data Control Language (DCL)**, and
-- **Transaction Control Language (TCL)**.
-
-In practice, these languages are not separate but form parts of a single database language, such as **SQL**.
-
-#### Data Definition Language (DDL)
-
-DDL is used to specify the database schema. It is used for creating and altering database structures such as tables, schemas, indexes, and constraints. The following operations are part of DDL:
-
-| **Operation** | **Description**                                                       | **Example**                                            |
-| ------------- | --------------------------------------------------------------------- | ------------------------------------------------------ |
-| CREATE        | To create a database instance or objects like tables, schemas, etc.   | `CREATE TABLE Employees (ID INT, Name VARCHAR(100));`  |
-| ALTER         | To alter the structure of the database or database objects.           | `ALTER TABLE Employees ADD COLUMN Age INT;`            |
-| DROP          | To drop database instances or objects (e.g., tables, schemas).        | `DROP TABLE Employees;`                                |
-| TRUNCATE      | To delete all records from a table without removing the table itself. | `TRUNCATE TABLE Employees;`                            |
-| RENAME        | To rename a database object (e.g., a table, column, etc.).            | `RENAME TABLE Employees TO Staff;`                     |
-| COMMENT       | To add comments to database objects (e.g., tables, columns).          | `COMMENT ON COLUMN Employees.Name IS 'Employee Name';` |
-
-Since these commands define or update the schema, they are categorized as part of **Data Definition Language**.
-
-#### Data Manipulation Language (DML)
-
-DML is used for accessing and manipulating data stored in a database. The following operations are part of DML:
-
-| Command    | Description                              | Example                                                      |
-| ---------- | ---------------------------------------- | ------------------------------------------------------------ |
-| **SELECT** | To read records from one or more tables. | `SELECT * FROM Employees;`                                   |
-| **INSERT** | To insert records into tables.           | `INSERT INTO Employees (Name, Age) VALUES ('John Doe', 30);` |
-| **UPDATE** | To update existing data in a table.      | `UPDATE Employees SET Age = 31 WHERE Name = 'John Doe';`     |
-| **DELETE** | To delete records from a table.          | `DELETE FROM Employees WHERE Name = 'John Doe';`             |
-
-#### Data Control Language (DCL)
-
-DCL is used for granting and revoking access to the database. The main DCL operations are:
-
-| Command    | Description                              | Example                                      |
-| ---------- | ---------------------------------------- | -------------------------------------------- |
-| **GRANT**  | To give access privileges to a user.     | `GRANT SELECT ON Employees TO user_name;`    |
-| **REVOKE** | To remove access privileges from a user. | `REVOKE SELECT ON Employees FROM user_name;` |
-
-Although DDL, DML, and DCL are often considered separate languages, they are actually components of a single database language like SQL.
-
-#### Transaction Control Language (TCL)
-
-TCL commands manage changes to the database that are made using DML. These changes can either be committed (saved) or rolled back (undone) using TCL commands:
-
-| Command      | Description                                                         | Example     |
-| ------------ | ------------------------------------------------------------------- | ----------- |
-| **COMMIT**   | To save all changes made by DML commands (INSERT, UPDATE, DELETE).  | `COMMIT;`   |
-| **ROLLBACK** | To undo changes made by DML commands and revert the database state. | `ROLLBACK;` |
 
 #### Keys in Relational Databases
 
@@ -770,233 +772,6 @@ If a table contains a column with multiple values (e.g., multiple phone numbers)
 - `Boyce-Codd Normal Form (BCNF):` BCNF is a stricter version of 3NF where, for every functional dependency, the left side must be a super key.
 
 By applying normalization, you can eliminate various types of anomalies (insertion, update, and deletion anomalies) and ensure the database maintains consistency and integrity.
-
-### Retrieving Data from a Single Table
-
-1. The SELECT Statement
-2. The SELECT Clause
-3. The WHERE Clause
-4. The AND, OR, and NOT Operators
-5. The IN Operator
-6. The BETWEEN Operator
-7. The LIKE Operator
-8. The PATINDEX & LIKE Operator for Pattern Matching
-9. The IS NULL Operator
-10. The ORDER BY Clause
-11. The TOP Clause (instead of LIMIT)
-
-### Retrieving Data from Multiple Tables
-
-1. Inner Joins
-2. Joining Across Databases
-3. Self Joins
-4. Joining Multiple Tables
-5. Compound Join Conditions
-6. Implicit Join Syntax
-7. Outer Joins
-8. Outer Join Between Multiple Tables
-9. Self-Outer Joins
-10. The USING Clause (Not applicable in MSSQL, use ON instead)
-11. Natural Joins (MSSQL does not have Natural Joins, use explicit join conditions)
-12. Cross Joins
-13. Unions
-
-### Inserting, Updating, and Deleting Data
-
-1. Column Attributes
-2. Inserting a Row
-3. Inserting Multiple Rows
-4. Inserting Hierarchical Rows
-5. Creating a Copy of a Table (via `SELECT INTO` or `INSERT INTO`)
-6. Updating a Single Row
-7. Updating Multiple Rows
-8. Using Subqueries in Updates
-9. Deleting Rows
-10. Restoring Databases
-
-### Summarizing Data
-
-1. Aggregate Functions (SUM, AVG, COUNT, etc.)
-2. The GROUP BY Clause
-3. The HAVING Clause
-4. The ROLLUP Operator (also, CUBE in MSSQL)
-
-### Writing Complex Queries
-
-1. Introduction
-2. Subqueries
-3. The IN Operator
-4. Subqueries vs Joins
-5. The ALL Keyword
-6. The ANY Keyword
-7. Correlated Subqueries
-8. The EXISTS Operator
-9. Subqueries in the SELECT Clause
-10. Subqueries in the FROM Clause
-
-### Essential SQL Server Functions
-
-1. Numeric Functions
-2. String Functions
-3. Date Functions in SQL Server
-4. Formatting Dates and Times
-5. Calculating Dates and Times
-6. The ISNULL and COALESCE Functions
-7. The IIF Function (instead of CASE)
-8. The CASE Expression
-
-### Views
-
-1. Creating Views
-2. Altering or Dropping Views
-3. Updatable Views
-4. The WITH CHECK OPTION Clause
-
-### . Other Benefits of Views
-
-5. Stored Procedures
-
-### What are Stored Procedures?
-
-1. Creating a Stored Procedure
-2. Creating Procedures Using SQL Server Management Studio (SSMS)
-3. Dropping Stored Procedures
-4. Parameters
-5. Parameters with Default Value
-6. Parameter Validation
-7. Output Parameters
-8. Variables
-9. Functions
-10. Other Conventions
-
-### Triggers and Events
-
-1. Triggers
-2. Viewing Triggers
-3. Dropping Triggers
-4. Using Triggers for Auditing
-5. Events (SQL Server Agent Jobs)
-6. Viewing, Dropping, and Altering Jobs/Events
-
-### Transactions and Concurrency
-
-1. Transactions
-2. Creating Transactions
-3. Concurrency and Locking
-4. Concurrency Problems
-5. Transaction Isolation Levels (Read Uncommitted, Read Committed, Repeatable Read, Serializable)
-6. Handling Deadlocks
-
-### Data Types
-
-#### SQL Server String Data Type
-
-| Data Type      | Description                                | Max Size                       |
-| -------------- | ------------------------------------------ | ------------------------------ |
-| `char(n)`      | Fixed width character string data type.    | Up to 8000 characters          |
-| `varchar(n)`   | Variable width character string data type. | Up to 8000 characters          |
-| `varchar(max)` | Variable width character string data type. | Up to 1,073,741,824 characters |
-| `text`         | Variable width character string data type. | Up to 2GB of text data         |
-| `nchar`        | Fixed width Unicode string data type.      | Up to 4000 characters          |
-| `nvarchar`     | Variable width Unicode string data type.   | Up to 4000 characters          |
-| `ntext`        | Variable width Unicode string data type.   | Up to 2GB of text data         |
-| `binary(n)`    | Fixed width Binary string data type.       | Up to 8000 bytes               |
-| `varbinary`    | Variable width Binary string data type.    | Up to 8000 bytes               |
-| `image`        | Variable width Binary string data type.    | Up to 2GB                      |
-
-#### SQL Server Numeric Data Types
-
-| Data Type  | Description                                                                                                                          | Range                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
-| `bit`      | Integer that can be 0, 1 or null.                                                                                                    | 0, 1, NULL                                              |
-| `tinyint`  | Whole numbers from 0 to 255.                                                                                                         | 0 to 255                                                |
-| `smallint` | Whole numbers between -32,768 and 32,767.                                                                                            | -32,768 to 32,767                                       |
-| `int`      | Whole numbers between -2,147,483,648 and 2,147,483,647.                                                                              | -2,147,483,648 to 2,147,483,647                         |
-| `bigint`   | Whole numbers between -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807.                                                      | -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 |
-| `float(n)` | Floating precision number data from -1.79E+308 to 1.79E+308. The `n` parameter indicates whether the field should hold 4 or 8 bytes. | -1.79E+308 to 1.79E+308                                 |
-| `real`     | Floating precision number from -3.40E+38 to 3.40E+38.                                                                                | -3.40E+38 to 3.40E+38                                   |
-| `money`    | Monetary data from -922,337,233,685,477.5808 to 922,337,203,685,477.5807.                                                            | -922,337,233,685,477.5808 to 922,337,203,685,477.5807   |
-
-#### SQL Server Date and Time Data Type
-
-| Data Type   | Description                                                                                                          | Range                                |
-| ----------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `datetime`  | Date and time combination, supports range from January 1, 1753 to December 31, 9999 with 3.33 milliseconds accuracy. | January 1, 1753 to December 31, 9999 |
-| `datetime2` | Date and time combination, supports range from January 1, 0001 to December 31, 9999 with 100 nanoseconds accuracy.   | January 1, 0001 to December 31, 9999 |
-| `date`      | Stores date only.                                                                                                    | January 1, 0001 to December 31, 9999 |
-| `time`      | Stores time only with 100 nanoseconds accuracy.                                                                      | N/A                                  |
-| `timestamp` | Stores a unique number when a new row gets created or modified, based on an internal clock.                          | N/A                                  |
-
-#### SQL Server Other Data Types
-
-| Data Type          | Description                                                                                         | Max Size         |
-| ------------------ | --------------------------------------------------------------------------------------------------- | ---------------- |
-| `sql_variant`      | Used for various data types except for text, timestamp, and ntext. Stores up to 8000 bytes of data. | Up to 8000 bytes |
-| `XML`              | Stores XML formatted data.                                                                          | Maximum 2GB      |
-| `cursor`           | Stores a reference to a cursor used for database operations.                                        | N/A              |
-| `table`            | Stores result set for later processing.                                                             | N/A              |
-| `uniqueidentifier` | Stores GUID (Globally Unique Identifier).                                                           | N/A              |
-
-### Designing Databases
-
-1. Introduction
-2. Data Modeling
-3. Conceptual Models
-4. Logical Models
-5. Physical Models
-6. Primary Keys
-7. Foreign Keys
-8. Foreign Key Constraints
-9. Normalization
-10. 1NF- First Normal Form
-11. Link Tables
-12. 2NF- Second Normal Form
-13. 3NF- Third Normal Form
-14. My Pragmatic Advice
-15. Don't Model the Universe
-16. Forward Engineering a Model (From SSMS or Data Tools)
-17. Synchronizing a Model with a Database
-18. Reverse Engineering a Database (Using SSMS or Visual Studio)
-19. Project- Flight Booking System
-20. Solution- Conceptual Model
-21. Solution- Logical Model
-22. Project - Video Rental Application
-23. Solution- Conceptual Model
-24. Solution- Logical Model
-25. Creating and Dropping Databases
-26. Creating Tables
-27. Altering Tables
-28. Creating Relationships
-29. Altering Primary and Foreign Key Constraints
-30. Character Sets and Collations
-31. Storage Engines (SQL Server has one engine)
-
-### Indexing for High Performance
-
-1. Introduction
-2. Indexes
-3. Creating Indexes
-4. Viewing Indexes
-5. Prefix Indexes
-6. Full-text Indexes
-7. Composite Indexes
-8. Order of Columns in Composite Indexes
-9. When Indexes are Ignored
-10. Using Indexes for Sorting
-11. Covering Indexes
-12. Index Maintenance
-13. Performance Best Practices
-
-### Securing Databases
-
-1. Introduction
-2. Creating a User
-3. Viewing Users
-4. Dropping Users
-5. Changing Passwords
-6. Granting Permissions
-7. Viewing Permissions
-8. Revoking Permissions
 
 ## With Regards, `Jakir`
 
