@@ -13,7 +13,7 @@ A function in Oracle SQL is a predefined or user-defined program unit that takes
 | **Deterministic**            | Always return the same result for same input                       | Same input repeatedly      | Same output consistently      | Performance optimization, caching, indexed function calls | `DETERMINISTIC FUNCTION calc_tax(salary)` |
 
 - A Table Function is a PL/SQL function that returns a collection of rows (like a table) instead of a single value.
-- 
+
 **Quick Understanding**
 
 | Type                     | Input                       | Output                      | Think Like             |
@@ -24,9 +24,19 @@ A function in Oracle SQL is a predefined or user-defined program unit that takes
 | Pipeline Function        | Rows processed continuously | Many rows (streaming table) | `Streaming dataset`    |
 | Deterministic Function   | Same input                  | Same output                 | `Predictable function` |
 
-### User-Defined Function (UDF) (PL/SQL)
+### PL/SQL/User-Defined Function (UDF)
 
-A User-Defined Function (UDF) is a custom function written in PL/SQL to perform business logic and return a single value.
+A User-Defined Function (UDF) is a custom function written in PL/SQL to perform business logic and return a single value. **PL/SQL** PL/SQL (Procedural Language/SQL) is Oracle’s extension of SQL that allows you to write:
+
+- Logic (IF, LOOP)
+- Variables
+- Conditions
+- Procedures & functions
+
+> **In simple words:**
+>
+> - SQL = data query
+> - PL/SQL = programming with SQL
 
 **Key Characteristics**
 
@@ -37,6 +47,27 @@ A User-Defined Function (UDF) is a custom function written in PL/SQL to perform 
 | Language    | PL/SQL                                 |
 | Purpose     | Business logic / calculations          |
 | Execution   | Runs row-by-row if used in SQL         |
+
+### SQL vs PL/SQL
+
+| SQL                     | PL/SQL                       |
+| ----------------------- | ---------------------------- |
+| Declarative             | Procedural                   |
+| One statement at a time | Block of code                |
+| Only query data         | Logic + query + control flow |
+
+### PL/SQL Block Structure -  Every PL/SQL program has 3 sections
+
+```sql
+DECLARE
+   -- variables (optional)
+BEGIN
+   -- logic (mandatory)
+EXCEPTION
+   -- error handling (optional)
+END;
+/
+```
 
 1. **Scalar (Single-Row)**
 
