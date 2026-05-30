@@ -235,6 +235,16 @@ TCL commands manage changes to the database that are made using DML. These chang
 | Recreate table needed    | No                     | No               | Yes                |
 | Used in production       | Very common            | Common           | Risky/Dangerous    |
 
+### IN vs ANY vs ALL
+
+| Feature         | IN                       | ANY                         | ALL                    |
+| --------------- | ------------------------ | --------------------------- | ---------------------- |
+| Comparison type | Equality only (=)        | Flexible (>, <, =)          | Flexible (>, <, =)     |
+| Logic           | OR                       | OR (at least one true)      | AND (all must be true) |
+| Strength        | Simple                   | Medium                      | Strict                 |
+| Best for        | Fixed lists              | Subquery comparisons        | Boundary filtering     |
+| Null handling   | Can be tricky (`NOT IN`) | Safer than IN in many cases | Safe in most cases     |
+
 ### Datatype
 
 ```bash
@@ -395,44 +405,6 @@ SQL Statements
     └── REVOKE
 ```
 
-```bash
-docker logout container-registry.oracle.com
-docker login container-registry.oracle.com # Token `PDZbBJkFDDKLIhtm6v=`
-```
-
-```bash
-docker run -d \
-  --name oracle-xe \
-  -p 1521:1521 \
-  -e ORACLE_PASSWORD=Sql054003 \
-  gvenzl/oracle-xe:21-slim
-```
-
-```bash
-docker run -d --name oracle-xe \
-  -p 1521:1521 \
-  -e ORACLE_PASSWORD=Sql054003 \
-  gvenzl/oracle-xe:21-slim
-```
-
-```bash
-curl -I https://container-registry.oracle.com/v2/
-```
-
-```bash
-docker exec -it oracle-xe sqlplus system/Sql054003@localhost:1521/XEPDB1
-```
-
-[Install SQLDeveloper](https://www.oracle.com/database/sqldeveloper/vscode/)
-
-| Setting  | Value     |
-| -------- | --------- |
-| Host     | localhost |
-| Port     | 1521      |
-| Service  | XEPDB1    |
-| User     | system    |
-| Password | Sql054003 |
-
 ### CURD Operations
 
 ```bash
@@ -532,60 +504,6 @@ SELECT * FROM employees;
 ```
 
 > `ORA-00942: table or view does not exist`
-
-### Install on Docker
-
-```bash
-docker pull mcr.microsoft.com/mssql/server:2022-latest
-```
-
-```bash
-mkdir -p ~/mssql_data
-mkdir -p ~/mssql_backup
-chmod -R 777 ~/mssql_data ~/mssql_backup
-```
-
-```bash
-docker run -d \
-  --name mssql2022 \
-  --platform linux/amd64 \
-  -e "ACCEPT_EULA=Y" \
-  -e "MSSQL_SA_PASSWORD=Sql@054003" \
-  -p 1433:1433 \
-  -v ~/mssql_data:/var/opt/mssql \
-  -v ~/mssql_backup:/var/opt/mssql/backup \
-  --restart unless-stopped \
-  mcr.microsoft.com/mssql/server:2022-latest
-```
-
-### Connect to SQL Server
-
-1. Using `VSCode` `SQL Server Management Studio (SSMS)` or `Azure Data Studio`
-
-| Server    | Authentication | User | Password   | Port  |
-| --------- | -------------- | ---- | ---------- | ----- |
-| localhost | SQL Login      | sa   | Sql@054003 | 14433 |
-
-2. `SQLCmd` inside container
-
-```bash
-brew install sqlcmd
-sqlcmd --version
-```
-
-```bash
-sqlcmd -S localhost,1433 -U sa -P "Sql@054003"
-```
-
-```bash
-SELECT @@VERSION;
-GO
-```
-
-```bash
-docker exec -it mssql2022 /opt/mssql-tools/bin/sqlcmd \
-   -S localhost -U sa -P "Sql@054003"
-```
 
 #### Keys in Relational Databases
 

@@ -1,0 +1,2 @@
+-- Check for email format
+SELECT * FROM STRING_FUNCTIONS_DATA_TABLE;

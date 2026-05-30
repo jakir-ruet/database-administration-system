@@ -1,0 +1,2 @@
+SELECT UPPER('Welcome to Oracle SQL!') AS GREETING
+FROM DUAL;
