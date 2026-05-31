@@ -19,3 +19,17 @@ A VIEW is a **virtual** table created from a SQL query.
 - Improve security (hide columns)
 - Reuse SQL logic
 - Provide abstraction layer
+
+### HR Reporting System
+
+You have:
+
+- Employees table (raw data)
+- You don’t want users to directly query raw table
+- You want clean, secure, reusable reports
+- So we create views for HR dashboards
+
+#### Simple View (Active Employees Only)
+
+- Business requirement:
+- HR should only see active employees
