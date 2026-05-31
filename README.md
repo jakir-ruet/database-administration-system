@@ -592,16 +592,14 @@ we use a generated value:
 
 A column that can uniquely identify records.
 
-```bash
 | ID  | EMAIL           |
 | --- | --------------- |
 | 1   | jakir@gmail.com |
 | 2   | rahim@gmail.com |
-```
 
-> `ID` & `EMAIL` can uniquely identify rows.
-> Therefore both are Candidate Keys.
-> One Candidate Key becomes the Primary Key.
+> - `ID` & `EMAIL` can uniquely identify rows.
+> - Therefore both are Candidate Keys.
+> - One Candidate Key becomes the Primary Key.
 
 ```bash
 Candidate Keys
@@ -753,7 +751,16 @@ CREATE TABLE USERS (
 );
 ```
 
-### Relationships
+### Relationships - Mapping Cardinality
+
+Mapping cardinality defines the number of relationships between entities in a relational database.
+
+| **Relationship** | **Description**                                                                                                                               | **Example**                                                                                      |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **One to One**   | An entity in set A can be associated with at most one entity in set B, and vice versa.                                                        | `A person can have one passport, and a passport can belong to one person.`                       |
+| **One to Many**  | An entity in set A can be associated with multiple entities in set B, but an entity in set B can only be associated with one entity in set A. | `A department can have multiple employees, but an employee can belong to only one department.`   |
+| **Many to One**  | An entity in set A can only be associated with one entity in set B, but an entity in set B can be associated with multiple entities in set A. | `Many employees can belong to one department, but each employee belongs to only one department.` |
+| **Many to Many** | An entity in set A can be associated with multiple entities in set B, and vice versa.                                                         | `Students can enroll in multiple courses, and each course can have multiple students.`           |
 
 - One-to-One (1:1) - `Employee ↔ Passport`
 - One-to-Many (1:N) - `Department → Employees`
@@ -999,34 +1006,6 @@ CREATE TABLE STUDENT (
     STU_AGE INT NOT NULL,
     STU_ADDRESS VARCHAR(235),
     PRIMARY KEY (ROLL_NO)
-);
-```
-
-#### Mapping Cardinality
-
-Mapping cardinality defines the number of relationships between entities in a relational database.
-
-| **Relationship** | **Description**                                                                                                                               | **Example**                                                                                      |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| **One to One**   | An entity in set A can be associated with at most one entity in set B, and vice versa.                                                        | `A person can have one passport, and a passport can belong to one person.`                       |
-| **One to Many**  | An entity in set A can be associated with multiple entities in set B, but an entity in set B can only be associated with one entity in set A. | `A department can have multiple employees, but an employee can belong to only one department.`   |
-| **Many to One**  | An entity in set A can only be associated with one entity in set B, but an entity in set B can be associated with multiple entities in set A. | `Many employees can belong to one department, but each employee belongs to only one department.` |
-| **Many to Many** | An entity in set A can be associated with multiple entities in set B, and vice versa.                                                         | `Students can enroll in multiple courses, and each course can have multiple students.`           |
-
-`Example of One to Many`
-
-```bash
-CREATE TABLE Customer (
-    customer_id INT PRIMARY KEY NOT NULL,
-    first_name VARCHAR(20),
-    last_name VARCHAR(20)
-);
-
-CREATE TABLE Order (
-    order_id INT PRIMARY KEY NOT NULL,
-    customer_id INT,
-    order_details VARCHAR(50),
-    CONSTRAINT fk_Customers FOREIGN KEY (customer_id) REFERENCES Customer
 );
 ```
 
