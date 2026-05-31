@@ -131,7 +131,7 @@ The Three Opening Stages (Oracle Startup Stages)
 | Monitoring            | DBSNMP      | Used by Oracle Enterprise Manager (OEM) for database monitoring            | OEM health monitoring dashboards           |
 |                       | APPQOSSYS   | Oracle Quality of Service (QoS) monitoring for performance tracking        | Tracks workload and DB performance         |
 | Application Framework | APEX_XXXXXX | Oracle APEX schema used for web-based applications                         | Running APEX dashboards and low-code apps  |
-| Application Framework | FLOWS_FILES | Stores uploaded files for Oracle APEX applications                         | File upload/download in APEX apps          |
+|                       | FLOWS_FILES | Stores uploaded files for Oracle APEX applications                         | File upload/download in APEX apps          |
 |                       | ANONYMOUS   | Enables HTTP/XML DB access for web services                                | REST/XML web service access                |
 | XML & Search          | XDB         | XML Database engine for storing and querying XML data                      | Storing XML documents in database          |
 |                       | CTXSYS      | Oracle Text engine for full-text search indexing                           | Full-text search using `CONTAINS()`        |
