@@ -51,6 +51,33 @@ Container Database (CDB)
 └── Additional PDBs (Optional)
 ```
 
+**CDB$ROOT vs PDB$SEED vs XEPDB1**
+
+| Feature           | CDB$ROOT                       | PDB$SEED                       | XEPDB1                            |
+| ----------------- | ------------------------------ | ------------------------------ | --------------------------------- |
+| Type              | Root Container                 | Seed Pluggable Database        | User Pluggable Database           |
+| Purpose           | Manages entire CDB system      | Template for creating new PDBs | Application/database for users    |
+| Role              | System administration          | Copy source for new PDBs       | Working database                  |
+| Data Dictionary   | Full global dictionary         | Minimal template dictionary    | Local dictionary (PDB-level view) |
+| User Type Allowed | Common users only (C##)        | No users allowed (read-only)   | Local users allowed               |
+| Example Users     | C##ADMIN, C##DBA               | Not applicable                 | JAKIR, HR, APP_USER               |
+| Read/Write        | Read + system control          | Read-only                      | Read + write                      |
+| Modifiable        | Yes (DBA operations only)      | No (locked template)           | Yes (normal operations)           |
+| Creation Purpose  | Created automatically with CDB | Auto-created with CDB          | Created from SEED or manually     |
+| Usage             | Internal DB management         | Cloning new PDBs               | Application development           |
+
+> **Visual Structure**
+
+```bash
+CDB (Container Database)
+│
+├── CDB$ROOT   → System brain (DBA only) like Control room of a building
+│
+├── PDB$SEED   → Template (read-only) like Blueprint of apartments
+│
+└── XEPDB1     → Working database (YOU use this) like Actual apartment where people live
+```
+
 **Database Architecture Layer - Modern**
 
 | Layer                 | Component                | Description                                           |
@@ -74,6 +101,8 @@ Container Database (CDB)
 | ----------- | ------------ | --------------------- | -------- |
 | Common User | CDB$ROOT     | Must start with `C##` | C##ADMIN |
 | Local User  | PDB (XEPDB1) | No prefix required    | JAKIR    |
+
+**traditional Oracle architecture**
 
 ![Architecture of Oracle](/img/oracle-architecture-simplified.png)
 
