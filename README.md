@@ -102,7 +102,7 @@ CDB (Container Database)
 | Common User | CDB$ROOT     | Must start with `C##` | C##ADMIN |
 | Local User  | PDB (XEPDB1) | No prefix required    | JAKIR    |
 
-**traditional Oracle architecture**
+**Traditional Oracle Architecture**
 
 ![Architecture of Oracle](/img/oracle-architecture-simplified.png)
 
