@@ -4,12 +4,76 @@
 
 ### Introduction
 
-1. What is SQL?
-   SQL (Structured Query Language) is the standard programming language used to manage and manipulate relational databases. It allows users to query, insert, update, and delete data stored in a database.
-2. Installing SQL Server on Windows
-3. Installing SQL Server on Mac (via Docker or remote access)
+SQL (Structured Query Language) is the standard programming language used to manage and manipulate relational databases. It allows users to query, insert, update, and delete data stored in a database.
 
-### Welcome to Oracle Database 21c
+- Installing SQL Server on Windows
+- Installing SQL Server on Mac (via Docker or remote access)
+
+> In Oracle Database 21c uses the Multitenant Architecture, where a single **Container Database (CDB)** can contain **multiple Pluggable Databases (PDBs)**.
+
+**High-Level Architecture**
+
+```bash
+Oracle Database 21c
+│
+├── Container Database (CDB)
+│
+├── Oracle Instance
+│   ├── System Global Area (SGA)
+│   ├── Program Global Area (PGA)
+│   └── Background Processes
+│
+└── Database Files
+    ├── Control Files
+    ├── Data Files
+    └── Online Redo Logs
+```
+
+**Multitenant Architecture**
+
+```bash
+Container Database (CDB)
+│
+├── CDB$ROOT
+│   ├── Oracle system metadata
+│   ├── Data dictionary
+│   └── Common users (C##USER)
+│
+├── PDB$SEED
+│   └── Read-only template used to create new PDBs
+│
+├── XEPDB1
+│   ├── Application users
+│   ├── Tables
+│   ├── Views
+│   └── Procedures
+│
+└── Additional PDBs (Optional)
+```
+
+**Database Architecture Layer - Modern**
+
+| Layer                 | Component                | Description                                           |
+| --------------------- | ------------------------ | ----------------------------------------------------- |
+| Database Architecture | Container Database (CDB) | Root structure that contains all pluggable databases  |
+| Database Architecture | CDB$ROOT                 | Stores Oracle system metadata and common users        |
+| Database Architecture | PDB$SEED                 | Read-only template used to create new PDBs            |
+| Database Architecture | PDB (e.g., XEPDB1)       | User/application database containing schemas and data |
+
+**Multitenant Structure - Modern**
+
+| Container | Type           | Purpose                                 |
+| --------- | -------------- | --------------------------------------- |
+| CDB$ROOT  | Root Container | Stores system metadata and common users |
+| PDB$SEED  | Seed PDB       | Template for creating new PDBs          |
+| XEPDB1    | Pluggable DB   | Application database for users and data |
+
+**User Types - Modern**
+
+| User Type   | Location     | Naming Rule           | Example  |
+| ----------- | ------------ | --------------------- | -------- |
+| Common User | CDB$ROOT     | Must start with `C##` | C##ADMIN |
+| Local User  | PDB (XEPDB1) | No prefix required    | JAKIR    |
 
 ![Architecture of Oracle](/img/oracle-architecture-simplified.png)
 
