@@ -42,7 +42,7 @@ Container Database (CDB)
 ├── PDB$SEED
 │   └── Read-only template used to create new PDBs
 │
-├── XEPDB1
+├── FREEPDB1/XEPDB1
 │   ├── Application users
 │   ├── Tables
 │   ├── Views
@@ -51,56 +51,70 @@ Container Database (CDB)
 └── Additional PDBs (Optional)
 ```
 
+**XEPDB1/FREEPDB1**
+
+| Feature     | XEPDB1    | FREEPDB1             |
+| ----------- | --------- | -------------------- |
+| Base DB     | Oracle XE | Oracle Free/23ai     |
+| PDB name    | XEPDB1    | FREEPDB1             |
+| Performance | Limited   | Better               |
+| RAM limit   | ~2 GB     | Higher               |
+| CPU limit   | 2 threads | Higher               |
+| Features    | Basic     | More modern          |
+| Use case    | Learning  | Dev + modern testing |
+
 **CDB$ROOT vs PDB$SEED vs XEPDB1**
 
-| Feature           | CDB$ROOT                       | PDB$SEED                       | XEPDB1                            |
-| ----------------- | ------------------------------ | ------------------------------ | --------------------------------- |
-| Type              | Root Container                 | Seed Pluggable Database        | User Pluggable Database           |
-| Purpose           | Manages entire CDB system      | Template for creating new PDBs | Application/database for users    |
-| Role              | System administration          | Copy source for new PDBs       | Working database                  |
-| Data Dictionary   | Full global dictionary         | Minimal template dictionary    | Local dictionary (PDB-level view) |
-| User Type Allowed | Common users only (C##)        | No users allowed (read-only)   | Local users allowed               |
-| Example Users     | C##ADMIN, C##DBA               | Not applicable                 | JAKIR, HR, APP_USER               |
-| Read/Write        | Read + system control          | Read-only                      | Read + write                      |
-| Modifiable        | Yes (DBA operations only)      | No (locked template)           | Yes (normal operations)           |
-| Creation Purpose  | Created automatically with CDB | Auto-created with CDB          | Created from SEED or manually     |
-| Usage             | Internal DB management         | Cloning new PDBs               | Application development           |
+| Feature           | CDB$ROOT                       | PDB$SEED                       | XEPDB1                            | FREEPDB1                                |
+| ----------------- | ------------------------------ | ------------------------------ | --------------------------------- | --------------------------------------- |
+| Type              | Root Container                 | Seed Pluggable Database        | User Pluggable Database           | User Pluggable Database                 |
+| Purpose           | Manages entire CDB system      | Template for creating new PDBs | Working database for XE           | Working database for Oracle Free / 23ai |
+| Role              | System administration          | Copy source for new PDBs       | Application database              | Application database                    |
+| Data Dictionary   | Full global dictionary         | Minimal template dictionary    | Local dictionary (PDB-level view) | Local dictionary (PDB-level view)       |
+| User Type Allowed | Common users only (C##)        | No users allowed (read-only)   | Local users allowed               | Local users allowed                     |
+| Example Users     | C##ADMIN, C##DBA               | Not applicable                 | JAKIR, HR, APP_USER               | JAKIR, HR, APP_USER                     |
+| Read/Write        | Read + system control          | Read-only                      | Read + write                      | Read + write                            |
+| Modifiable        | DBA operations only            | No (locked template)           | Yes (normal operations)           | Yes (normal operations)                 |
+| Creation Purpose  | Created automatically with CDB | Auto-created with CDB          | Created from XE image             | Created from Oracle Free image          |
+| Usage             | Internal DB management         | Cloning new PDBs               | Lightweight development           | Modern development / testing            |
 
 > **Visual Structure**
 
 ```bash
 CDB (Container Database)
 │
-├── CDB$ROOT   → System brain (DBA only) like Control room of a building
+├── CDB$ROOT        → System brain (DBA only) like Control room of a building
 │
-├── PDB$SEED   → Template (read-only) like Blueprint of apartments
+├── PDB$SEED        → Template (read-only) like Blueprint of apartments
 │
-└── XEPDB1     → Working database (YOU use this) like Actual apartment where people live
+└── FREEPDB1/XEPDB1 → Working database (YOU use this) like Actual apartment where people live
 ```
 
 **Database Architecture Layer - Modern**
 
-| Layer                 | Component                | Description                                           |
-| --------------------- | ------------------------ | ----------------------------------------------------- |
-| Database Architecture | Container Database (CDB) | Root structure that contains all pluggable databases  |
-| Database Architecture | CDB$ROOT                 | Stores Oracle system metadata and common users        |
-| Database Architecture | PDB$SEED                 | Read-only template used to create new PDBs            |
-| Database Architecture | PDB (e.g., XEPDB1)       | User/application database containing schemas and data |
+| Layer                 | Component                   | Description                                           |
+| --------------------- | --------------------------- | ----------------------------------------------------- |
+| Database Architecture | Container Database (CDB)    | Root structure that contains all pluggable databases  |
+| Database Architecture | CDB$ROOT                    | Stores Oracle system metadata and common users        |
+| Database Architecture | PDB$SEED                    | Read-only template used to create new PDBs            |
+| Database Architecture | PDB (e.g., FREEPDB1/XEPDB1) | User/application database containing schemas and data |
+
+> **PDB:** Pluggable Databases
 
 **Multitenant Structure - Modern**
 
-| Container | Type           | Purpose                                 |
-| --------- | -------------- | --------------------------------------- |
-| CDB$ROOT  | Root Container | Stores system metadata and common users |
-| PDB$SEED  | Seed PDB       | Template for creating new PDBs          |
-| XEPDB1    | Pluggable DB   | Application database for users and data |
+| Container       | Type           | Purpose                                 |
+| --------------- | -------------- | --------------------------------------- |
+| CDB$ROOT        | Root Container | Stores system metadata and common users |
+| PDB$SEED        | Seed PDB       | Template for creating new PDBs          |
+| FREEPDB1/XEPDB1 | Pluggable DB   | Application database for users and data |
 
 **User Types - Modern**
 
-| User Type   | Location     | Naming Rule           | Example  |
-| ----------- | ------------ | --------------------- | -------- |
-| Common User | CDB$ROOT     | Must start with `C##` | C##ADMIN |
-| Local User  | PDB (XEPDB1) | No prefix required    | JAKIR    |
+| User Type   | Location              | Naming Rule           | Example  |
+| ----------- | --------------------- | --------------------- | -------- |
+| Common User | CDB$ROOT              | Must start with `C##` | C##ADMIN |
+| Local User  | PDB (FREEPDB1/XEPDB1) | No prefix required    | JAKIR    |
 
 **Traditional Oracle Architecture**
 
@@ -310,23 +324,30 @@ TCL commands manage changes to the database that are made using DML. These chang
 
 ### DELETE vs TRUNCATE vs DROP
 
-| Feature                  | DELETE                 | TRUNCATE         | DROP               |
-| ------------------------ | ---------------------- | ---------------- | ------------------ |
-| Type                     | DML                    | DDL              | DDL                |
-| Removes rows             | Yes                    | Yes              | Yes                |
-| Removes table structure  | No                     | No               | Yes                |
-| WHERE clause allowed     | Yes                    | No               | No                 |
-| Rollback possible        | Yes                    | No (auto commit) | No (auto commit)   |
-| Trigger fires            | Yes (`DELETE` trigger) | No               | No                 |
-| Transaction logging      | Fully logged           | Minimal logging  | Metadata operation |
-| Speed                    | Slower                 | Faster           | Fastest            |
-| Space released           | Usually No             | Yes              | Yes                |
-| Table remains            | Yes                    | Yes              | No                 |
-| Index remains            | Yes                    | Yes              | Removed            |
-| Constraints remain       | Yes                    | Yes              | Removed            |
-| Grants/privileges remain | Yes                    | Yes              | Removed            |
-| Recreate table needed    | No                     | No               | Yes                |
-| Used in production       | Very common            | Common           | Risky/Dangerous    |
+| Feature                  | DELETE                       | TRUNCATE TABLE                        | DROP TABLE                      |
+| ------------------------ | ---------------------------- | ------------------------------------- | ------------------------------- |
+| Type                     | DML                          | DDL                                   | DDL                             |
+| Removes rows             | Yes                          | Yes (all rows)                        | Yes (all rows + object)         |
+| Removes table structure  | No                           | No                                    | Yes                             |
+| WHERE clause allowed     | Yes                          | No                                    | No                              |
+| Rollback possible        | Yes (before COMMIT)          | No (implicit commit)                  | No (implicit commit)            |
+| Trigger fires            | Yes (`DELETE` triggers)      | No                                    | No                              |
+| Transaction logging      | Fully logged row-by-row      | Minimal logging (deallocates extents) | Metadata operation              |
+| Speed                    | Slower                       | Faster                                | Fastest                         |
+| Space released           | No (generally not immediate) | Yes (releases storage extents)        | Yes (frees segment)             |
+| Table remains            | Yes                          | Yes                                   | No                              |
+| Index remains            | Yes (still valid)            | Yes (structure kept, reset stats)     | No (indexes dropped with table) |
+| Constraints remain       | Yes                          | Yes                                   | No                              |
+| Grants/privileges remain | Yes                          | Yes                                   | No                              |
+| Recreate table needed    | No                           | No                                    | Yes                             |
+| Typical use case         | Selective cleanup            | Fast full reset of data               | Remove object completely        |
+| Production usage         | Very common                  | Common (carefully used)               | Risky / controlled use only     |
+
+> In Oracle 23ai, these commands behave the same as earlier versions, but DROP may allow recovery via Recycle Bin if enabled:
+
+```bash
+FLASHBACK TABLE employees TO BEFORE DROP;
+```
 
 ### IN vs ANY vs ALL
 
@@ -498,30 +519,57 @@ SQL Statements
     └── REVOKE
 ```
 
-### CURD Operations
+### [Oracle 23ai Install on Podman/Docker](https://container-registry.oracle.com/ords/f?p=113:4:129347028471423:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:1863,1863,Oracle%20Database%20Free,Oracle%20Database%20Free,1,0&cs=30DK5kuXk07Q_Z0j2O63l4KhBhxoenLHTIZXr5QRjMIi8_U7Iqs9SXwxqXL_HC963rUacOu9hjRek1DlkMLYzYA)
+
+```bash
+podman login container-registry.oracle.com
+podman pull container-registry.oracle.com/database/free:latest
+```
+
+```bash
+podman run -d --name oracle-db \
+  -p 1521:1521 \
+  -p 5500:5500 \
+  -e ORACLE_PWD=Sql054003 \
+  container-registry.oracle.com/database/free:latest
+```
+
+```bash
+firewall-cmd --permanent --add-port=1521/tcp
+firewall-cmd --permanent --add-port=5500/tcp
+firewall-cmd --reload
+firewall-cmd --list-ports
+```
+
+```bash
+systemctl status firewalld
+systemctl start firewalld
+systemctl enable firewalld
+```
+
+### [Oracle SQL Developer](https://www.oracle.com/database/sqldeveloper/technologies/download/)
+
+```bash
+cd /opt
+dnf install -y /opt/sqldeveloper-24.3.1-347.1826.noarch.rpm
+```
+
+### User creation for `FREEPDB1/XEPDB1`
 
 ```bash
 SELECT username FROM dba_users ORDER BY username;
-CREATE USER Jakir IDENTIFIED BY Sql054003;
-GRANT CONNECT, RESOURCE TO jakir; # Full developer permissions - Optional
-ALTER USER jakir ACCOUNT UNLOCK; # Unlock user if locked
-ALTER USER jakir IDENTIFIED BY mypassword; # Reset password
-ALTER USER jakir QUOTA UNLIMITED ON users; # Give storage quota
+ALTER SESSION SET CONTAINER = FREEPDB1;
+CREATE USER jakir IDENTIFIED BY Sql054003;
 ```
 
 ```bash
-# Login as `system`
-docker exec -it oracle-xe sqlplus system/Sql054003@localhost:1521/XEPDB1
-GRANT CONNECT, RESOURCE TO jakir; # Full developer permissions - Optional
-ALTER USER jakir ACCOUNT UNLOCK; # Unlock user if locked
-Exit;
-# Login as `jakir`
-docker exec -it oracle-xe sqlplus jakir/Sql054003@localhost:1521/XEPDB1
-```
-
-```bash
-SHOW USER;
-SELECT username FROM dba_users; # Show user list
+GRANT CREATE SESSION TO jakir;
+GRANT CREATE TABLE TO jakir;
+GRANT CREATE VIEW TO jakir;
+GRANT CREATE SEQUENCE TO jakir;
+GRANT CREATE PROCEDURE TO jakir;
+GRANT CONNECT, RESOURCE TO jakir;
+ALTER USER jakir QUOTA UNLIMITED ON USERS;
 ```
 
 ### Delete Example
