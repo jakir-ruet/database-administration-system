@@ -158,14 +158,40 @@ Although both DBMS and RDBMS are used to store information in a physical databas
 | 8   | DBMS is suited for small organizations with single users and small data. | RDBMS is designed to handle large data and support multiple users.                                                        |
 | 9   | Examples: File systems, XML, etc.                                        | Examples: MySQL, PostgreSQL, SQL Server, Oracle, etc.                                                                     |
 
-### Database Languages
+### Database Languages (SQL Statements)
 
 A database system provides various languages for defining, manipulating, and controlling data. These include the
 
-- **Data Definition Language (DDL)**,
-- **Data Manipulation Language (DML)**,
-- **Data Control Language (DCL)**, and
-- **Transaction Control Language (TCL)**.
+```bash
+SQL Statements
+│
+├── DDL (Data Definition Language)
+│   ├── CREATE
+│   ├── ALTER
+│   ├── DROP
+│   ├── TRUNCATE
+│   ├── RENAME
+│   └── COMMENT
+│
+├── DML (Data Manipulation Language)
+│   ├── INSERT
+│   ├── UPDATE
+│   ├── DELETE
+│   └── MERGE
+│
+├── DQL (Data Query Language)
+│   └── SELECT
+│
+├── DCL (Data Control Language)
+│   ├── GRANT
+│   └── REVOKE
+│
+└── TCL (Transaction Control Language)
+    ├── COMMIT
+    ├── ROLLBACK
+    ├── SAVEPOINT
+    └── SET TRANSACTION
+```
 
 In practice, these languages are not separate but form parts of a single database language, such as **SQL**.
 
@@ -210,10 +236,12 @@ Although DDL, DML, and DCL are often considered separate languages, they are act
 
 TCL commands manage changes to the database that are made using DML. These changes can either be committed (saved) or rolled back (undone) using TCL commands:
 
-| Command      | Description                                                         | Example     |
-| ------------ | ------------------------------------------------------------------- | ----------- |
-| **COMMIT**   | To save all changes made by DML commands (INSERT, UPDATE, DELETE).  | `COMMIT;`   |
-| **ROLLBACK** | To undo changes made by DML commands and revert the database state. | `ROLLBACK;` |
+| Command                   | Description                                                           | Example            |
+| ------------------------- | --------------------------------------------------------------------- | ------------------ |
+| **COMMIT**                | Save all changes made by DML commands (`INSERT`, `UPDATE`, `DELETE`). | `COMMIT;`          |
+| **ROLLBACK**              | Undo all uncommitted changes since the last COMMIT.                   | `ROLLBACK;`        |
+| **SAVEPOINT**             | Create a checkpoint within a transaction.                             | `SAVEPOINT sp1;`   |
+| **ROLLBACK TO SAVEPOINT** | Undo changes made after a specific savepoint.                         | `ROLLBACK TO sp1;` |
 
 ### DELETE vs TRUNCATE vs DROP
 
