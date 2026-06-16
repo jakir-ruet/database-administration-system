@@ -221,7 +221,26 @@ A private memory region for each server process. Not shared. Contains:
 > - PGA = Process-specific,
 > - SGA = Shared across all processes.
 
-### Oracle listener
+### Oracle Net Management Tools
+
+Oracle Net Management tools are used to configure, manage, and troubleshoot network connectivity between Oracle clients and databases using Oracle Net Services. They mainly manage:
+
+1. Database connections (client → server)
+2. Listener configuration
+3. Naming resolution (TNS)
+4. Network profiles and security
+
+#### Main Oracle Net Management Tools
+
+| Tool                                           | Type              | Primary Purpose                           | Key Functionality                                                         | Main Files/Components Used                          | Typical Use Case                                        |
+| ---------------------------------------------- | ----------------- | ----------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------- |
+| **Oracle Net Manager (netmgr)**                | GUI tool          | Configure and manage Oracle Net Services  | Create/edit TNS entries, listener setup, naming methods, profile settings | `tnsnames.ora`, `listener.ora`, `sqlnet.ora`        | Day-to-day network configuration and maintenance        |
+| **Oracle Net Configuration Assistant (NETCA)** | GUI wizard tool   | Initial network setup                     | Create listener, configure naming methods, generate network config files  | `listener.ora`, `tnsnames.ora`, `sqlnet.ora`        | First-time Oracle Net Services setup after installation |
+| **Listener Control Utility (LSNRCTL)**         | Command-line tool | Manage listener runtime operations        | Start/stop/restart listener, check status, view services                  | `listener.ora`, runtime listener process            | Monitor and control listener service during operation   |
+| **Oracle Enterprise Manager (OEM)**            | Web-based tool    | Centralized monitoring and administration | Monitor listener, manage network services, performance tracking           | Oracle Management Repository + Net Services configs | Enterprise-level monitoring and remote administration   |
+
+
+#### Oracle listener
 
 ```INI
 LISTENER =
@@ -253,7 +272,7 @@ SECURE_REGISTER_LISTENER = (TCP)
 VALID_NODE_CHECKING_REGISTRATION_LISTENER = ON
 ```
 
-### Oracle Listener (12c/23ai) & OS Firewall
+#### Oracle Listener (12c/23ai) & OS Firewall
 
 The OS firewall controls whether packets reach `Oracle` at all, while the Oracle listener (12c/23ai) only manages and validates database connection requests after they arrive.
 
