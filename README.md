@@ -614,42 +614,6 @@ Enterprise Applications
 └── Multilingual Content  → NVARCHAR2/NCLOB
 ```
 
-### Types of SQL Statements in Oracle Database
-
-```bash
-SQL Statements
-│
-├── DDL (Data Definition Language)
-│   │
-│   ├── CREATE
-│   ├── ALTER
-│   ├── DROP
-│   ├── TRUNCATE
-│   └── RENAME
-│
-├── DML (Data Manipulation Language)
-│   │
-│   ├── INSERT
-│   ├── UPDATE
-│   ├── DELETE
-│   └── MERGE
-│
-├── DQL (Data Query Language)
-│   │
-│   └── SELECT
-│
-├── TCL (Transaction Control Language)
-│   │
-│   ├── COMMIT
-│   ├── ROLLBACK
-│   └── SAVEPOINT
-│
-└── DCL (Data Control Language)
-    │
-    ├── GRANT
-    └── REVOKE
-```
-
 ### [Oracle 23ai Install on Podman/Docker](https://container-registry.oracle.com/ords/f?p=113:4:129347028471423:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:1863,1863,Oracle%20Database%20Free,Oracle%20Database%20Free,1,0&cs=30DK5kuXk07Q_Z0j2O63l4KhBhxoenLHTIZXr5QRjMIi8_U7Iqs9SXwxqXL_HC963rUacOu9hjRek1DlkMLYzYA)
 
 ```bash
