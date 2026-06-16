@@ -1023,7 +1023,9 @@ CREATE TABLE PASSPORT (
     EMP_ID NUMBER UNIQUE,
     ISSUE_DATE DATE,
     EXPIRY_DATE DATE,
-    FOREIGN KEY (EMP_ID)
+
+    CONSTRAINT fk_passport_employee
+        FOREIGN KEY (EMP_ID)
         REFERENCES EMPLOYEE(EMP_ID)
 );
 ```
@@ -1047,7 +1049,9 @@ CREATE TABLE PASSPORT (
     PASSPORT_NUMBER VARCHAR2(20) UNIQUE,
     ISSUE_DATE DATE,
     EXPIRY_DATE DATE,
-    FOREIGN KEY (EMP_ID)
+
+    CONSTRAINT fk_passport_employee
+        FOREIGN KEY (EMP_ID)
         REFERENCES EMPLOYEE(EMP_ID)
 );
 ```
@@ -1069,24 +1073,26 @@ CREATE TABLE EMPLOYEE (
 ```bash
 @Entity
 public class Employee {
+
     @Id
     private Long id;
 
     private String name;
 
-    @OneToOne(mappedBy = "employee")
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
     private Passport passport;
-}
 ```
 
 ```bash
 @Entity
 public class Passport {
+
     @Id
     private Long empId;
 
     @OneToOne
     @MapsId
+    @JoinColumn(name = "emp_id")
     private Employee employee;
 
     private String passportNumber;
@@ -1119,7 +1125,9 @@ CREATE TABLE EMPLOYEE (
     EMP_ID NUMBER PRIMARY KEY,
     EMP_NAME VARCHAR2(100) NOT NULL,
     DEPT_ID NUMBER,
-    FOREIGN KEY (DEPT_ID)
+
+    CONSTRAINT fk_employee_department
+        FOREIGN KEY (DEPT_ID)
         REFERENCES DEPARTMENT(DEPT_ID)
 );
 ```
@@ -1175,12 +1183,15 @@ CREATE TABLE ENROLLMENT (
     COURSE_ID NUMBER,
     ENROLL_DATE DATE DEFAULT SYSDATE,
 
-    PRIMARY KEY (STUDENT_ID, COURSE_ID),
+    CONSTRAINT pk_enrollment
+        PRIMARY KEY (STUDENT_ID, COURSE_ID),
 
-    FOREIGN KEY (STUDENT_ID)
+    CONSTRAINT fk_enrollment_student
+        FOREIGN KEY (STUDENT_ID)
         REFERENCES STUDENT(STUDENT_ID),
 
-    FOREIGN KEY (COURSE_ID)
+    CONSTRAINT fk_enrollment_course
+        FOREIGN KEY (COURSE_ID)
         REFERENCES COURSE(COURSE_ID)
 );
 ```
