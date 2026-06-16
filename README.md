@@ -134,7 +134,38 @@ An Oracle Database system consists of **two** main components:
 
 ### The instance
 
-The instance is the software layer that manages the database. It exists in volatile memory (RAM) and comprises:
+The Oracle Instance is a combination of `SGA (shared memory)` and `background processes` that manage the database. 
+
+**System Identifier (SID)** is the unique name used to identify this running instance in the system.
+
+```bash
+SID         = Name of the instance
+Instance    = Engine running in memory - in volatile memory (RAM) and comprises
+SGA         = Shared memory inside instance
+PGA         = Private memory per process
+```
+
+**Service Name** is a logical name used by clients to connect to a specific database service or PDB inside an Oracle database.
+
+```bash
+Oracle Database System
+│
+├── Instance (SID = FREE)
+│     ├── SGA (shared memory)
+│     ├── PGA (process memory)
+│
+└── Services (FREEPDB1, APP1_PDB)
+      └── Used by clients to connect
+```
+**System Identifier (SID) vs Service Name**
+
+| Feature | System Identifier (SID)| Service Name                 |
+| ------- | ---------------------- | ---------------------------- |
+| Meaning | Instance identifier    | Database connection endpoint |
+| Level   | Instance               | Database / PDB               |
+| Count   | 1 per instance         | Many per instance            |
+| Used by | Internal/admin tools   | Applications / JDBC          |
+| Example | FREE                   | FREEPDB1, APP1_PDB           |
 
 #### **System Global Area (SGA)**
 
@@ -189,6 +220,78 @@ A private memory region for each server process. Not shared. Contains:
 >
 > - PGA = Process-specific,
 > - SGA = Shared across all processes.
+
+### Oracle listener
+
+The OS firewall controls whether packets reach `Oracle` at all, while the Oracle listener (12c/23ai) only manages and validates database connection requests after they arrive.
+
+| Feature               | Oracle Listener (12c/23ai)     | OS Firewall                 |
+| --------------------- | ------------------------------ | --------------------------- |
+| Layer                 | Application (Oracle Net)       | Network (OS kernel)         |
+| Scope                 | Oracle services only           | All network traffic         |
+| Main job              | Route DB connections           | Block/allow packets         |
+| Sees SQL traffic?     | Yes (Oracle-level metadata)    | No                          |
+| Can stop port access? | No (only after packet arrives) | Yes (before Oracle sees it) |
+| Security role         | Authentication + routing       | Network access control      |
+
+> Practical takeaway - `Client → OS Firewall → Oracle Listener → Database service`
+> 
+> - OS firewall = first gate (network security boundary)
+> - Oracle listener = second gate (database routing + auth)
+> - Database ACL/SQL Firewall = third gate (service-level security)
+
+**Typical request–response flow of a database-backed service**
+
+```bash
+Client Request
+│
+└── Request Handler
+    │
+    ├── Authentication (Who are you?)
+    ├── Authorization (Can you access this?)
+    ├── Validation (Is request valid?)
+    └── Routing (Where should it go?)
+        │
+        └── SQL Parser
+            │
+            ├── Tokenizer (SQL → tokens)
+            ├── AST Builder (tokens → query tree)
+            └── Semantic Validation (tables/columns check)
+                │
+                └── Query Optimizer
+                    │
+                    ├── Index Selection
+                    ├── Join Ordering
+                    ├── Cost Estimation
+                    └── Query Rewrite
+                        │
+                        └── Execution Engine
+                            │
+                            ├── Plan Execution
+                            ├── Filtering (WHERE)
+                            ├── Joining Tables
+                            ├── Sorting / Grouping
+                            │
+                            └── Storage Engine
+                                │
+                                ├── Index Lookup (B-Tree / Hash)
+                                ├── Disk Access (pages/blocks)
+                                └── Cache Access (buffer pool)
+                                    │
+                                    └── Result Builder
+                                        │
+                                        ├── Row Assembly
+                                        ├── Type Formatting
+                                        └── Result Set Creation
+                                            │
+                                            └── Response Formatter
+                                                │
+                                                ├── JSON / Protocol Encoding
+                                                ├── Status Code Attach
+                                                └── Metadata (time, rows)
+                                                    │
+                                                    └── Client Response
+```
 
 ### The Database
 
