@@ -223,6 +223,38 @@ A private memory region for each server process. Not shared. Contains:
 
 ### Oracle listener
 
+```INI
+LISTENER =
+  (DESCRIPTION_LIST =
+    (DESCRIPTION =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = myserver.example.com)(PORT = 1521))
+      (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1521))
+    )
+  )
+
+SID_LIST_LISTENER =
+  (SID_LIST =
+    (SID_DESC =
+      (GLOBAL_DBNAME = orcl.example.com)
+      (ORACLE_HOME = /u01/app/oracle/product/19c/dbhome_1)
+      (SID_NAME = orcl)
+    )
+  )
+
+LOGGING_LISTENER = ON
+TRACE_LEVEL_LISTENER = SUPPORT
+TRACE_DIRECTORY_LISTENER = /u01/app/oracle/diag/tnslsnr/myserver/listener/trace
+LOG_DIRECTORY_LISTENER = /u01/app/oracle/diag/tnslsnr/myserver/listener/log
+
+INBOUND_CONNECT_TIMEOUT_LISTENER = 60
+CONNECT_TIMEOUT_LISTENER = 60
+
+SECURE_REGISTER_LISTENER = (TCP)
+VALID_NODE_CHECKING_REGISTRATION_LISTENER = ON
+```
+
+### Oracle Listener (12c/23ai) & OS Firewall
+
 The OS firewall controls whether packets reach `Oracle` at all, while the Oracle listener (12c/23ai) only manages and validates database connection requests after they arrive.
 
 | Feature               | Oracle Listener (12c/23ai)     | OS Firewall                 |
