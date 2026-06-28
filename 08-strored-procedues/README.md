@@ -315,7 +315,6 @@ END;
 
 -- Means: last FETCH successfully got a row.
 
-
 ---------------
 -- %NOTFOUND
 ---------------
@@ -340,7 +339,6 @@ BEGIN
 END;
 /
 -- Means: no more rows to fetch.
-
 
 ---------------
 -- %ROWCOUNT
@@ -610,32 +608,341 @@ END;
 
 ### Collections
 
-### BULK Operations
+A collection is a PL/SQL data structure that holds multiple values of the same datatype—like arrays or lists. Oracle has `3` collection types:
+
+1. Associative Array (Index-by Table)
+2. Nested Table
+3. VARRAY (Variable Size Array)
+
+1. Associative Array (Index-by Table)
+
+**Key Idea**
+
+- Exists only in PL/SQL memory
+- Fastest for procedural logic
+- Indexed by number or string
+
+**When to use**
+
+- Temporary data processing
+- Caching lookup values
+- Performance-heavy loops
+
+2. Nested Table
+
+**Key idea**
+
+- Can be used in SQL + PL/SQL
+- Can be stored in database tables
+- Supports TABLE() operator
+
+**When to use**
+
+- SQL queries with collections
+- Bulk processing
+- Data exchange between SQL & PL/SQL
+- 23ai JSON integration scenarios
+
+3. VARRAY (Variable Size Array)
+
+**Key idea**
+
+- Has maximum size
+- Always ordered
+- No gaps allowed
+
+**When to use**
+
+- Small fixed lists
+- Ordered data (like top 5 items)
+- Embedded structured attributes
+
+**Quick Comparison**
+
+| Feature        | Associative Array | Nested Table   | VARRAY             |
+| -------------- | ----------------- | -------------- | ------------------ |
+| SQL usable     | No                | Yes            | Yes                |
+| Persistent     | No                | Yes            | Yes                |
+| Size           | Unlimited         | Unlimited      | Fixed              |
+| Sparse allowed | Yes               | Yes            | No                 |
+| Best use       | PL/SQL logic      | SQL + bulk ops | small ordered sets |
 
 ### Packages
 
+a package is a schema object that groups related procedures, functions, variables, cursors, and exceptions into a single unit. A package has two parts:
+
+- Package Specification (Spec) → Public interface (what is visible outside)
+- Package Body → Implementation (how logic works)
+
 #### Specification
+
+**Purpose**
+
+- Declares public elements
+- Acts like a contract
+- Only declarations, no full logic
+
+**Contains**
+
+- Procedures (only signatures)
+- Functions (only signatures)
+- Global variables
+- Cursors
+- Exceptions
+
+```bash
+CREATE OR REPLACE PACKAGE emp_pkg AS
+
+    -- Global variable
+    g_tax_rate NUMBER := 0.1;
+
+    -- Procedure declaration
+    PROCEDURE add_employee(
+        p_emp_id    NUMBER,
+        p_name      VARCHAR2,
+        p_salary    NUMBER
+    );
+
+    -- Function declaration
+    FUNCTION get_salary(
+        p_emp_id NUMBER
+    ) RETURN NUMBER;
+
+END emp_pkg;
+/
+```
 
 #### Body
 
+**Purpose**
+
+- Contains actual implementation
+- Hidden from users
+- Can include private logic (not visible outside)
+
+**Contains**
+
+- Full procedure code
+- Full function code
+- Private variables, cursors, helpers
+
+```bash
+CREATE OR REPLACE PACKAGE BODY emp_pkg AS
+
+    -- Private variable (only inside package)
+    v_bonus NUMBER := 500;
+
+    -- Procedure implementation
+    PROCEDURE add_employee(
+        p_emp_id    NUMBER,
+        p_name      VARCHAR2,
+        p_salary    NUMBER
+    ) IS
+    BEGIN
+        INSERT INTO employees(emp_id, name, salary)
+        VALUES (p_emp_id, p_name, p_salary);
+
+        COMMIT;
+    END add_employee;
+
+
+    -- Function implementation
+    FUNCTION get_salary(
+        p_emp_id NUMBER
+    ) RETURN NUMBER
+    IS
+        v_salary NUMBER;
+    BEGIN
+        SELECT salary
+        INTO v_salary
+        FROM employees
+        WHERE emp_id = p_emp_id;
+
+        RETURN v_salary + v_bonus; -- using private variable
+    END get_salary;
+
+END emp_pkg;
+/
+```
+
+**How to Use the Package**
+
+- Call Procedure
+
+```bash
+BEGIN
+    emp_pkg.add_employee(101, 'John', 50000);
+END;
+/
+```
+
+- Call Function
+
+```bash
+SELECT emp_pkg.get_salary(101) FROM dual;
+```
+
+**Differences (Spec vs Body)**
+
+| Feature       | Spec                  | Body                                     |
+| ------------- | --------------------- | ---------------------------------------- |
+| Visibility    | Public                | Private + implementation                 |
+| Mandatory     | Yes                   | Optional (if only spec has declarations) |
+| Logic         | Not allowed           | Fully written                            |
+| Accessibility | External users see it | Hidden                                   |
+
 ### Dynamic SQL
 
-### Autonomous Transaction
+Dynamic SQL in Oracle is a technique where SQL statements are constructed and executed at runtime, instead of being written and compiled in advance. like like `EXECUTE IMMEDIATE` or `DBMS_SQL`.
+
+```bash
+BEGIN
+    EXECUTE IMMEDIATE 'SELECT * FROM employees';
+END;
+/
+```
+
+> Here, the SQL statement is treated as a string and executed at runtime.
+
+**Key Point:**
+
+> - Static SQL → fixed at compile time
+> - Dynamic SQL → built and executed at runtime
 
 ### Pragma
 
-### Object Types
+A PRAGMA is a compiler directive in PL/SQL that instructs the PL/SQL compiler to process a program unit in a specific way. It is not an executable statement and does not perform any action at runtime by itself. Common PRAGMAs in Oracle
 
-### LOB Programming
+- PRAGMA AUTONOMOUS_TRANSACTION
+- PRAGMA EXCEPTION_INIT
+- PRAGMA INLINE
+- PRAGMA UDF
+- PRAGMA SERIALLY_REUSABLE
+- PRAGMA RESTRICT_REFERENCES (legacy)
+
+### Autonomous Transaction
+
+An Autonomous Transaction is an independent transaction that runs separately from the main (parent) transaction. It has its own transaction context, so it can COMMIT or ROLLBACK independently without affecting the parent transaction.
+
+**Why is it Needed?**
+
+Suppose a transaction inserts employee data and also writes an audit log. If the employee insertion fails and is rolled back, you may still want the audit log to remain in the database. An autonomous transaction allows exactly that.
+
+**Execution Flow**
+
+```bash
+Main Transaction
+        │
+        │ Insert Employee
+        │
+        ▼
+Autonomous Procedure
+        │
+        │ Insert Log
+        │
+        │ COMMIT
+        ▼
+Returns to Main Transaction
+        │
+        │ ROLLBACK
+        ▼
+Employee → Rolled Back
+Log → Saved
+```
+
+**PRAGMA vs PRAGMA AUTONOMOUS_TRANSACTION**
+
+| Feature             | `PRAGMA`                   | `PRAGMA AUTONOMOUS_TRANSACTION`         |
+| ------------------- | -------------------------- | --------------------------------------- |
+| Meaning             | General compiler directive | Specific compiler directive             |
+| Purpose             | Changes compiler behavior  | Creates an independent transaction      |
+| Executes at runtime | No                         | Enables autonomous transaction behavior |
+| Scope               | Many compiler features     | Transaction management only             |
+
+> Autonomous Transaction and PRAGMA in Oracle PL/SQL (Oracle 23ai)
 
 ### JSON
 
+JSON (JavaScript Object Notation) is a lightweight data-interchange format that stores data as key-value pairs and arrays. Oracle 23ai provides native support for storing and processing JSON data.
+
+```bash
+CREATE TABLE employees_json (
+    emp_id NUMBER,
+    emp_data JSON
+);
+```
+
+```bash
+INSERT INTO employees_json
+VALUES (
+    101,
+    JSON('{
+        "name":"John",
+        "salary":5000,
+        "department":"IT"
+    }')
+);
+
+COMMIT;
+```
+
 ### XML
+
+XML (eXtensible Markup Language) is a self-describing markup language used to store and exchange structured data using custom tags.
+
+```bash
+CREATE TABLE employee_xml (
+    emp_id NUMBER,
+    emp_data XMLTYPE
+);
+```
+
+```bash
+INSERT INTO employee_xml
+VALUES (
+    101,
+    XMLTYPE(
+        '<Employee>
+            <Name>John</Name>
+            <Salary>5000</Salary>
+            <Department>IT</Department>
+         </Employee>'
+    )
+);
+
+COMMIT;
+```
 
 ### File Handling
 
+File handling in Oracle is the process of reading from and writing to files on the database server using the UTL_FILE package.
+
 ### Email
+
+UTL_MAIL is a built-in Oracle package used to send emails from PL/SQL programs through an SMTP mail server.
 
 ### Scheduler Jobs
 
+DBMS_SCHEDULER is an Oracle package used to create, schedule, manage, and monitor automated jobs.
+
 ### DBMS Packages
+
+| Package                 | Purpose                             |
+| ----------------------- | ----------------------------------- |
+| `DBMS_OUTPUT`           | Display output from PL/SQL          |
+| `DBMS_SCHEDULER`        | Schedule jobs                       |
+| `DBMS_JOB`              | Legacy job scheduling               |
+| `DBMS_LOB`              | Manage LOB data                     |
+| `DBMS_SQL`              | Dynamic SQL                         |
+| `DBMS_RANDOM`           | Generate random numbers and strings |
+| `DBMS_CRYPTO`           | Encryption and hashing              |
+| `DBMS_LOCK`             | User-defined locks                  |
+| `DBMS_SESSION`          | Manage session information          |
+| `DBMS_METADATA`         | Extract object definitions (DDL)    |
+| `DBMS_STATS`            | Gather optimizer statistics         |
+| `DBMS_PIPE`             | Inter-process communication         |
+| `DBMS_ALERT`            | Event notifications                 |
+| `DBMS_APPLICATION_INFO` | Set application/module information  |
+| `UTL_FILE`              | Read and write files                |
+| `UTL_MAIL`              | Send emails                         |
+| `UTL_SMTP`              | Advanced SMTP email support         |
