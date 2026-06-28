@@ -451,7 +451,7 @@ END;
 
 **Where is a RECORD stored after execution?**
 
-A PL/SQL RECORD is stored in the program's memory (PGA - Program Global Area) while the PL/SQL block is executing. It is not stored in the database table unless you explicitly insert or update a table using the record's values.
+A PL/SQL RECORD is stored in the program's memory (PGA - Program Global Area) while the PL/SQL block is executing. It is **not stored in the database table** unless you **explicitly insert or update a table** using the record's values.
 
 ```bash
 DECLARE
