@@ -26,19 +26,19 @@ END;
 
 -- Local and Grobal Variables
 DECLARE
-    -- Global variable
-    n1 NUMBER := 100;
-    n2 NUMBER := 200;
-BEGIN
-    DBMS_OUTPUT.PUT_LINE('Global variable n1: ' || n1);
-    DBMS_OUTPUT.PUT_LINE('Global variable n2: ' || n2);
-    DECLARE
-    -- Local variable
-    n3 NUMBER := 120;
-    n4 NUMBER := 150;
-BEGIN
-    DBMS_OUTPUT.PUT_LINE('Local variable n3: ' || n3);
-    DBMS_OUTPUT.PUT_LINE('Local variable n4: ' || n4);
-END;
-END;
+        -- Global variable
+        n1 NUMBER := 100;
+        n2 NUMBER := 200;
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('Global variable n1: ' || n1);
+        DBMS_OUTPUT.PUT_LINE('Global variable n2: ' || n2);
+        DECLARE
+        -- Local variable
+        n3 NUMBER := 120;
+        n4 NUMBER := 150;
+        BEGIN
+            DBMS_OUTPUT.PUT_LINE('Local variable n3: ' || n3);
+            DBMS_OUTPUT.PUT_LINE('Local variable n4: ' || n4);
+        END;
+    END;
 /
