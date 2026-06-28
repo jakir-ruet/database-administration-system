@@ -61,8 +61,8 @@ A parameter is a named variable declared in the header of a `procedure` or `func
 | `OUT`    | Write only, value returned to caller           | Procedure → Caller |
 | `IN OUT` | Read & write, value passed and returned        | Caller ↔ Procedure |
 
-> A caller is any program, block, procedure, function, trigger, or application that invokes (calls) another procedure or function.
-> A procedure is a named PL/SQL program (block) that performs a specific task.
+> - A caller is any program, block, procedure, function, trigger, or application that invokes (calls) another procedure or function.
+> - A procedure is a named PL/SQL program (block) that performs a specific task.
 
 ### Cursor
 
