@@ -1,4 +1,4 @@
-### Transaction
+### Transaction (COMMIT, ROLLBACK, SAVEPOINT)
 
 A transaction is a group of SQL statements that Oracle treats as a single unit of work.
 
